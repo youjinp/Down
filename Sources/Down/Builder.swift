@@ -259,7 +259,7 @@ fileprivate func addChildren(node: CMarkNode, contents: Any?, contains: Contains
     }
     
     else {
-        fatalError("Tried to add a no de with class \(childClass) to a node with class \(nodeGetClass(node: node))")
+        fatalError("Tried to add a node with class \(childClass) to a node with class \(nodeGetClass(node: node))")
     }
 }
 

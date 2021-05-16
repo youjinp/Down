@@ -74,6 +74,8 @@ public struct CommonMarkRenderer: Renderer {
 
         return commonMarkString
     }
+    
+    public init() {}
 
 }
 
