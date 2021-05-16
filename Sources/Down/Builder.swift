@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import libcmark
+import cmark
 
 // MARK: - Public
 public func buildDocument(_ children: [Node]) -> Node {

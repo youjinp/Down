@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import libcmark
+import cmark
 
 // MARK: CMarkNode
 // MARK: - CMarkNode

@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "cmark",
+        "repositoryURL": "https://github.com/youjinp/swift-cmark.git",
+        "state": {
+          "branch": "swift",
+          "revision": "0c65125c8724c4d166642f616b17bb13a9a3882f",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

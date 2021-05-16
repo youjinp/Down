@@ -29,8 +29,9 @@ buildDocument(
     - update dependency for main target
     
 - run `make all` in cmark
-- copy all files from `cmark` > `src` (EXCEPT `main.c`)
+- copy all files from `cmark`
 - copy `cmark_export.h`, `cmark_version.h` and `config.h` from `cmark` > `build` > `src`
+- create `include` > `module.modulemap`
 
 
 ## References
@@ -39,6 +40,7 @@ buildDocument(
 - [builder](https://github.com/jgm/cmark-lua/blob/master/cmark/builder.lua)
 - [github-gfm](https://github.com/github/cmark-gfm)
 - [commonmark](https://github.com/commonmark/cmark)
+- [swiftCommonMark](https://github.com/gonzalezreal/SwiftCommonMark)
 
 ## TODO
 - use github-gfm and support strikethrough
