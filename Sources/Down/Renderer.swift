@@ -13,7 +13,7 @@ import cmark
 public protocol Renderer {
     associatedtype Result
     
-    func render(_ node: CMarkNode, options: DownOptions, width: Int32) throws -> Result
+    func render(_ node: Node, options: DownOptions, width: Int32) throws -> Result
 }
 
 
@@ -58,9 +58,9 @@ public struct CommonMarkRenderer: Renderer {
      * - Throws:
      *     `ASTRenderingError` if the AST could not be converted.
      */
-    public func render(_ node: CMarkNode, options: DownOptions = .default, width: Int32 = 0) throws -> String {
+    public func render(_ node: Node, options: DownOptions = .default, width: Int32 = 0) throws -> String {
 
-        guard let cCommonMarkString = cmark_render_commonmark(node, options.rawValue, width) else {
+        guard let cCommonMarkString = cmark_render_commonmark(node.cMarkNode, options.rawValue, width) else {
             throw DownErrors.astRenderingError
         }
 

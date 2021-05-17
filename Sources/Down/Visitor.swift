@@ -21,11 +21,11 @@ public protocol Visitor {
 
     func visit(document node: Document) -> Result
     func visit(blockQuote node: BlockQuote) -> Result
-    func visit(list node: List) -> Result
+    func visit(list node: OrderedList) -> Result
+    func visit(list node: BulletList) -> Result
     func visit(item node: Item) -> Result
     func visit(codeBlock node: CodeBlock) -> Result
     func visit(htmlBlock node: HtmlBlock) -> Result
-    func visit(customBlock node: CustomBlock) -> Result
     func visit(paragraph node: Paragraph) -> Result
     func visit(heading node: Heading) -> Result
     func visit(thematicBreak node: ThematicBreak) -> Result
@@ -50,11 +50,11 @@ extension Visitor {
             switch child {
             case let child as Document:       return visit(document: child)
             case let child as BlockQuote:     return visit(blockQuote: child)
-            case let child as List:           return visit(list: child)
+            case let child as OrderedList:    return visit(list: child)
+            case let child as BulletList:     return visit(list: child)
             case let child as Item:           return visit(item: child)
             case let child as CodeBlock:      return visit(codeBlock: child)
             case let child as HtmlBlock:      return visit(htmlBlock: child)
-            case let child as CustomBlock:    return visit(customBlock: child)
             case let child as Paragraph:      return visit(paragraph: child)
             case let child as Heading:        return visit(heading: child)
             case let child as ThematicBreak:  return visit(thematicBreak: child)
@@ -122,19 +122,19 @@ public class DebugVisitor: Visitor {
         return String(repeating: "    ", count: depth)
     }
 
-    
-    
-    
-    
-    
+
+
+
+
+
     // MARK: Life cycle
     public init() {}
 
-    
-    
-    
-    
-    
+
+
+
+
+
     // MARK: API
     public typealias Result = String
 
@@ -146,7 +146,11 @@ public class DebugVisitor: Visitor {
         return reportWithChildren(node)
     }
 
-    public func visit(list node: List) -> String {
+    public func visit(list node: OrderedList) -> String {
+        return reportWithChildren(node)
+    }
+    
+    public func visit(list node: BulletList) -> String {
         return reportWithChildren(node)
     }
 
@@ -159,10 +163,6 @@ public class DebugVisitor: Visitor {
     }
 
     public func visit(htmlBlock node: HtmlBlock) -> String {
-        return reportWithChildren(node)
-    }
-
-    public func visit(customBlock node: CustomBlock) -> String {
         return reportWithChildren(node)
     }
 
@@ -218,10 +218,10 @@ public class DebugVisitor: Visitor {
         return reportWithChildren(node)
     }
 
-    
-    
-    
-    
+
+
+
+
     // MARK: Helpers
     private func report(_ node: Node) -> String {
         return "\(indent)\(node is Document ? "" : "↳ ")\(String(reflecting: node))\n"

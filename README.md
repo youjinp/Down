@@ -14,8 +14,8 @@ node.render(with: ARenderer)
 
 ## Build Node
 ```swift
-buildDocument(
-    buildText("...")
+Document(
+    Text("...")
     ...
 )
 ```
