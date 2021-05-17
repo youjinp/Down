@@ -20,20 +20,6 @@ Document(
 )
 ```
 
-
-## Dev
-
-### Import CMark
-- update `package.swift` 
-    - create `libcmark` target
-    - update dependency for main target
-    
-- run `make all` in cmark
-- copy all files from `cmark`
-- copy `cmark_export.h`, `cmark_version.h` and `config.h` from `cmark` > `build` > `src`
-- create `include` > `module.modulemap`
-
-
 ## References
 - [down](https://github.com/johnxnguyen/Down)
 - [reverse renderer](https://github.com/commonmark/cmark/issues/99)
