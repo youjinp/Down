@@ -45,6 +45,34 @@ public protocol Visitor {
 
 extension Visitor {
 
+    public func visit(_ node: Node) -> Result {
+        switch node  {
+        case let node as Document:       return visit(document: node)
+        case let node as BlockQuote:     return visit(blockQuote: node)
+        case let node as OrderedList:    return visit(list: node)
+        case let node as BulletList:     return visit(list: node)
+        case let node as Item:           return visit(item: node)
+        case let node as CodeBlock:      return visit(codeBlock: node)
+        case let node as HtmlBlock:      return visit(htmlBlock: node)
+        case let node as Paragraph:      return visit(paragraph: node)
+        case let node as Heading:        return visit(heading: node)
+        case let node as ThematicBreak:  return visit(thematicBreak: node)
+        case let node as Text:           return visit(text: node)
+        case let node as SoftBreak:      return visit(softBreak: node)
+        case let node as LineBreak:      return visit(lineBreak: node)
+        case let node as Code:           return visit(code: node)
+        case let node as HtmlInline:     return visit(htmlInline: node)
+        case let node as CustomInline:   return visit(customInline: node)
+        case let node as Emphasis:       return visit(emphasis: node)
+        case let node as Strong:         return visit(strong: node)
+        case let node as Link:           return visit(link: node)
+        case let node as Image:          return visit(image: node)
+        default:
+            assertionFailure("Unexpected node")
+            fatalError()
+        }
+    }
+    
     public func visitChildren(of node: Node) -> [Result] {
         return node.childSequence.compactMap { child in
             switch child {

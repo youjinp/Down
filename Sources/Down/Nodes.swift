@@ -137,33 +137,38 @@ public class Node {
     
     // MARK: Wrap Properties
     // type
-    var type: cmark_node_type {
+    public var type: cmark_node_type {
         return cmark_node_get_type(cMarkNode)
     }
     
-    var typeString: String {
+    public var typeString: String {
         String(cString: cmark_node_get_type_string(cMarkNode))
     }
     
     // hierarchy
-    var parent: Node? {
+    public var parent: Node? {
         return Node(cmark_node_parent(cMarkNode))
     }
     
-    var children: [Node] {
+    public var children: [Node] {
         var result: [Node] = []
 
         var child = cmark_node_first_child(cMarkNode)
         while let c = child {
-            result.append(Node(c))
+            result.append(c.wrap())
             child = cmark_node_next(child)
         }
         return result
     }
 
     // content
-    var literal: String? {
-        return String(cString: cmark_node_get_literal(cMarkNode))
+    public var literal: String? {
+        if let cString = cmark_node_get_literal(cMarkNode) {
+            return String(cString: cString)
+        }
+        
+        return nil
+        
     }
 
     // code
@@ -180,7 +185,7 @@ public class Node {
      * ```
      *
      */
-    var fenceInfo: String? {
+    public var fenceInfo: String? {
         return String(cString: cmark_node_get_fence_info(cMarkNode))
     }
 
@@ -188,7 +193,7 @@ public class Node {
     /**
      * The level of the heading, a value between 1 and 6.
      */
-    var headingLevel: Int {
+    public var headingLevel: Int {
         return Int(cmark_node_get_heading_level(cMarkNode))
     }
 
@@ -196,11 +201,11 @@ public class Node {
     /**
      * The type of the list, either bullet or ordered.
      */
-    var listType: cmark_list_type {
+    public var listType: cmark_list_type {
         return cmark_node_get_list_type(cMarkNode)
     }
 
-    var listStart: Int {
+    public var listStart: Int {
         return Int(cmark_node_get_list_start(cMarkNode))
     }
     
@@ -210,7 +215,7 @@ public class Node {
      * If any of the list items are separated by a blank line, then this property is `false`. This value is
      * a hint to render the list with more (loose) or less (tight) spacing between items.
      */
-    var listTight: Bool {
+    public var listTight: Bool {
         return cmark_node_get_list_tight(cMarkNode) != 0
     }
 
@@ -224,7 +229,7 @@ public class Node {
      * ![<text>](<url>)
      * ```
      */
-    var url: String? {
+    public var url: String? {
         return String(cString: cmark_node_get_url(cMarkNode))
     }
 
@@ -241,7 +246,7 @@ public class Node {
      * [<id>]: <url> "<title>"
      * ```
      */
-    var title: String? {
+    public var title: String? {
         return String(cString: cmark_node_get_title(cMarkNode))
     }
     
@@ -255,6 +260,10 @@ public class Node {
         return try renderer.render(self, options: options, width: width)
     }
     
+    public func visit<T: Visitor>(with visitor: T) -> T.Result {
+        return visitor.visit(self)
+    }
+    
     
     
     
@@ -263,14 +272,14 @@ public class Node {
     /**
      * True if the node has a sibling that succeeds it.
      */
-    var hasSuccessor: Bool {
+    public var hasSuccessor: Bool {
         return cmark_node_next(cMarkNode) != nil
     }
     
     /**
      * Sequence of wrapped child nodes.
      */
-    var childSequence: ChildSequence {
+    public var childSequence: ChildSequence {
         return ChildSequence(node: cMarkNode)
     }
     
