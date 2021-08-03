@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import cmark
+import libcmark
 
 // MARK: - Block Builder
 @resultBuilder

@@ -1,6 +1,6 @@
     import XCTest
     @testable import Down
-    @testable import cmark
+    @testable import libcmark
 
     final class DownTests: XCTestCase {
         func testExample() {
