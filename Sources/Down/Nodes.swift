@@ -264,6 +264,18 @@ public class Node {
         return visitor.visit(self)
     }
     
+    // update apis
+    public func addChildren(_ children: [Block]) {
+        cMarkNode.addChildren(children)
+    }
+    
+    public func addChildren(_ children: [Inline]) {
+        cMarkNode.addChildren(children)
+    }
+    
+    public func addChildren(_ children: [Item]) {
+        cMarkNode.addChildren(children)
+    }
     
     
     
@@ -356,7 +368,7 @@ public class Node {
 
 
 // MARK: - Document
-public class Document: Node, CustomDebugStringConvertible {
+public class Document: Node, CustomDebugStringConvertible, Block {
     public var debugDescription: String {
         return "Document"
     }
@@ -586,7 +598,7 @@ public class Image: Node, CustomDebugStringConvertible, Inline {
 
 
 // MARK: - Item
-public class Item: Node, CustomDebugStringConvertible {
+public class Item: Node, CustomDebugStringConvertible, Block {
     
     public convenience init(@BlockBuilder content: () -> [Block]) {
         let cMarkNode = createNode(type: CMARK_NODE_ITEM)
@@ -784,6 +796,7 @@ public class ThematicBreak: Node, CustomDebugStringConvertible, Block {
         return "Thematic Break"
     }
 }
+
 
 
 
