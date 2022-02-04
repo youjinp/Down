@@ -35,15 +35,18 @@ public func parse2(_ string: String) -> Node? {
                 nodeStack.append(BlockQuote {})
                 
             case MD_BLOCK_UL:
-                print("dbg - entered block: ul")
-                nodeStack.append(BulletList(tight: 1) {})
+                print("dbg - entered block: bullet list")
+                let detail = detail?.bindMemory(to: MD_BLOCK_UL_DETAIL.self, capacity: 1)
+                nodeStack.append(BulletList(tight: detail?.pointee.is_tight ?? 1) {})
                 
             case MD_BLOCK_OL:
-                print("dbg - entered block: ol")
-                nodeStack.append(OrderedList(delim: CMARK_PERIOD_DELIM, start: 1, tight: 1) {})
+                print("dbg - entered block: numbered list")
+                let detail = detail?.bindMemory(to: MD_BLOCK_OL_DETAIL.self, capacity: 1)
+                nodeStack.append(OrderedList(delim: CMARK_PERIOD_DELIM, start: Int32(detail?.pointee.start ?? 1), tight: detail?.pointee.is_tight ?? 1) {})
                 
             case MD_BLOCK_LI:
-                print("dbg - entered block: li")
+                print("dbg - entered block: item")
+                // let detail = detail?.bindMemory(to: MD_BLOCK_LI_DETAIL.self, capacity: 1)
                 nodeStack.append(Item {})
                 
             case MD_BLOCK_HR:
@@ -52,11 +55,13 @@ public func parse2(_ string: String) -> Node? {
                 
             case MD_BLOCK_H:
                 print("dbg - entered block: header")
-                nodeStack.append(Heading(level: 1, ""))
+                let detail = detail?.bindMemory(to: MD_BLOCK_H_DETAIL.self, capacity: 1)
+                nodeStack.append(Heading(level: Int32(detail?.pointee.level ?? 1)) {})
                 
             case MD_BLOCK_CODE:
                 print("dbg - entered block: code")
-                nodeStack.append(CodeBlock("", fenceInfo: ""))
+                let detail = detail?.bindMemory(to: MD_BLOCK_CODE_DETAIL.self, capacity: 1)
+                nodeStack.append(CodeBlock("", fenceInfo: detail?.pointee.lang.string ?? ""))
                 
             case MD_BLOCK_HTML:
                 print("dbg - entered block: html")
@@ -102,24 +107,42 @@ public func parse2(_ string: String) -> Node? {
             switch blockType {
             case MD_BLOCK_DOC:
                 print("dbg - left block: doc")
+                
             case MD_BLOCK_QUOTE:
                 print("dbg - left block: quote")
+                
             case MD_BLOCK_UL:
                 print("dbg - left block: ul")
+                
             case MD_BLOCK_OL:
                 print("dbg - left block: ol")
+                
             case MD_BLOCK_LI:
                 print("dbg - left block: li")
+                
+                // remove added paragraph for item
+                if nodeStack.last is Paragraph {
+                    let b = nodeStack.popLast() as! Block
+                    if let l = nodeStack.last {
+                        l.addChildren([b])
+                    }
+                }
+                
             case MD_BLOCK_HR:
                 print("dbg - left block: hr")
+                
             case MD_BLOCK_H:
                 print("dbg - left block: header")
+                
             case MD_BLOCK_CODE:
                 print("dbg - left block: code")
+                
             case MD_BLOCK_HTML:
                 print("dbg - left block: html")
+                
             case MD_BLOCK_P:
                 print("dbg - left block: paragraph")
+                
             case MD_BLOCK_TABLE:
                 print("dbg - left block: table")
                 ignoreBlockLevel -= 1
@@ -178,11 +201,13 @@ public func parse2(_ string: String) -> Node? {
                 
             case MD_SPAN_A:
                 print("dbg - entered span: link")
-                nodeStack.append(Link(url: "", title: nil) {})
+                let detail = detail?.bindMemory(to: MD_SPAN_A_DETAIL.self, capacity: 1)
+                nodeStack.append(Link(url: detail?.pointee.href.string ?? "", title: detail?.pointee.title.string ?? nil) {})
                 
             case MD_SPAN_IMG:
                 print("dbg - entered span: image")
-                nodeStack.append(Image(url: "", title: nil) {})
+                let detail = detail?.bindMemory(to: MD_SPAN_IMG_DETAIL.self, capacity: 1)
+                nodeStack.append(Image(url: detail?.pointee.src.string ?? "", title: detail?.pointee.title.string ?? nil) {})
                 
             case MD_SPAN_CODE:
                 print("dbg - entered span: code")
@@ -282,42 +307,53 @@ public func parse2(_ string: String) -> Node? {
                 return str ?? ""
             }()
             
+            func _addChildren(_ nodes: [Inline]) {
+                guard let l = nodeStack.last else { return }
+                
+                // if item and adding inlines, push a paragraph first
+                if l is Item {
+                    nodeStack.append(Paragraph {})
+                }
+                
+                nodeStack.last?.addChildren(nodes)
+            }
+            
             switch textType {
             case MD_TEXT_NORMAL:
                 print("dbg - textType: normal")
-                nodeStack.last?.addChildren([Text(str)])
+                _addChildren([Text(str)])
                 
             case MD_TEXT_NULLCHAR:
                 print("dbg - textType: null")
-                nodeStack.last?.addChildren([Text(str)])
+                _addChildren([Text(str)])
                 
             case MD_TEXT_BR:
                 print("dbg - textType: break")
-                nodeStack.last?.addChildren([LineBreak()])
+                _addChildren([LineBreak()])
                 
             case MD_TEXT_SOFTBR:
                 print("dbg - textType: softBreak")
-                nodeStack.last?.addChildren([SoftBreak()])
+                _addChildren([SoftBreak()])
                 
             case MD_TEXT_ENTITY:
                 print("dbg - textType: entity")
-                nodeStack.last?.addChildren([Text(str)])
+                _addChildren([Text(str)])
                 
             case MD_TEXT_CODE:
                 print("dbg - textType: code")
-                nodeStack.last?.addChildren([Text(str)])
+                nodeStack.last?.setLiteral(str)
                 
             case MD_TEXT_HTML:
                 print("dbg - textType: html")
-                nodeStack.last?.addChildren([Text(str)])
+                nodeStack.last?.setLiteral(str)
                 
             case MD_TEXT_LATEXMATH:
                 print("dbg - textType: latex")
-                nodeStack.last?.addChildren([Text(str)])
+                _addChildren([Text(str)])
                 
             default:
                 print("dbg - textType: unknown")
-                nodeStack.last?.addChildren([Text(str)])
+                _addChildren([Text(str)])
                 
             }
             
@@ -336,4 +372,14 @@ public func parse2(_ string: String) -> Node? {
     }
     
     return root
+}
+
+extension MD_ATTRIBUTE {
+    var string: String {
+        guard let t = self.text else { return "" }
+        let len = self.size
+        let data = Data(bytes: t, count: Int(len))
+        let str = String(data: data, encoding: String.Encoding.utf8)
+        return str ?? ""
+    }
 }

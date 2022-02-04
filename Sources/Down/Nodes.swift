@@ -277,6 +277,10 @@ public class Node {
         cMarkNode.addChildren(children)
     }
     
+    public func setLiteral(_ literal: String) {
+        cmark_node_set_literal(cMarkNode, literal)
+    }
+    
     
     
     
