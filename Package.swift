@@ -26,9 +26,18 @@ let package = Package(
             ]
         ),
         .target(
+            name: "libmd4c",
+            path: "Sources/libmd4c/src",
+            publicHeadersPath: ".",
+            cSettings: [
+                .headerSearchPath(".")
+            ]
+        ),
+        .target(
             name: "Down",
             dependencies: [
                 .target(name: "libcmark"),
+                .target(name: "libmd4c"),
             ],
             path: "Sources/Down"
         ),
