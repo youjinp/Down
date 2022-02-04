@@ -13,7 +13,7 @@ private var root: Node?
 private var nodeStack = [Node]()
 private var ignoreBlockLevel = 0
 
-public func parse2(_ string: String) -> Node? {
+public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
     
     root = nil
     nodeStack = []
@@ -21,7 +21,7 @@ public func parse2(_ string: String) -> Node? {
     
     var parser = MD_PARSER(
         abi_version: 0,
-        flags: UInt32(MD_FLAG_NOINDENTEDCODEBLOCKS)) { blockType, detail, userData in
+        flags: UInt32(flags.rawValue)) { blockType, detail, userData in
             
             guard ignoreBlockLevel == 0 else { return 1 }
             

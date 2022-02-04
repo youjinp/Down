@@ -7,6 +7,7 @@
 
 import Foundation
 import libcmark
+import libmd4c
 
 
 
@@ -143,4 +144,54 @@ public enum DownErrors: Error {
 
     #endif
 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// MARK: - Options2
+public struct DownOptions2: OptionSet {
+    
+    public let rawValue: Int32
+    public init(rawValue: Int32) {
+        self.rawValue = rawValue
+    }
+    
+    public static let `default` = DownOptions2([])
+    public static let collapseWhitespace = DownOptions2(rawValue: MD_FLAG_COLLAPSEWHITESPACE)
+    public static let permissiveATXHeaders = DownOptions2(rawValue: MD_FLAG_PERMISSIVEATXHEADERS)
+    public static let permissiveURLAutolinks = DownOptions2(rawValue: MD_FLAG_PERMISSIVEURLAUTOLINKS)
+    public static let permissiveMailAutolinks = DownOptions2(rawValue: MD_FLAG_PERMISSIVEEMAILAUTOLINKS)
+    public static let noIndentedCodeBlocks = DownOptions2(rawValue: MD_FLAG_NOINDENTEDCODEBLOCKS)
+    public static let noHTMLBlocks = DownOptions2(rawValue: MD_FLAG_NOHTMLBLOCKS)
+    public static let noHTMLSpans = DownOptions2(rawValue: MD_FLAG_NOHTMLSPANS)
+    public static let tables = DownOptions2(rawValue: MD_FLAG_TABLES)
+    public static let strikethrough = DownOptions2(rawValue: MD_FLAG_STRIKETHROUGH)
+    public static let permissiveWWWAutolinks = DownOptions2(rawValue: MD_FLAG_PERMISSIVEWWWAUTOLINKS)
+    public static let taskLists = DownOptions2(rawValue: MD_FLAG_TASKLISTS)
+    public static let latexMathSpans = DownOptions2(rawValue: MD_FLAG_LATEXMATHSPANS)
+    public static let wikiLinks = DownOptions2(rawValue: MD_FLAG_WIKILINKS)
+    public static let underline = DownOptions2(rawValue: MD_FLAG_UNDERLINE)
+    public static let permissiveAutolinks = DownOptions2(rawValue: MD_FLAG_PERMISSIVEEMAILAUTOLINKS | MD_FLAG_PERMISSIVEURLAUTOLINKS | MD_FLAG_PERMISSIVEWWWAUTOLINKS)
+    public static let noHTML = DownOptions2(rawValue: MD_FLAG_NOHTMLBLOCKS | MD_FLAG_NOHTMLSPANS)
+    public static let dialectCommonMark = DownOptions2(rawValue: MD_DIALECT_COMMONMARK)
+    public static let dialectGithub = DownOptions2(rawValue: MD_FLAG_PERMISSIVEEMAILAUTOLINKS | MD_FLAG_PERMISSIVEURLAUTOLINKS | MD_FLAG_PERMISSIVEWWWAUTOLINKS | MD_FLAG_TABLES | MD_FLAG_STRIKETHROUGH | MD_FLAG_TASKLISTS)
 }
