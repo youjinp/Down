@@ -4,6 +4,7 @@ import libcmark
 
 
 // MARK: - Parse
+@available(*, deprecated, renamed: "parse2", message: "This is deprecated")
 public func parse(_ string: String, options: DownOptions = .default) throws -> Node? {
     var tree: CMarkNode?
 
