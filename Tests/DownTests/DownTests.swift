@@ -32,4 +32,23 @@ final class DownTests: XCTestCase {
         let md = try! doc.render(with: CommonMarkRenderer(), options: .default, width: 0)
         XCTAssertEqual(md, "A very nice multiline document\n\nThis is the second line\n\n**A Bold*And italic*String**\n\n1)  First Item\n2)  Second Item\n3)  > Third Item\n\n<!-- end list -->\n\n  - First Item\n  - Second Item\n  - > Third Item\n")
     }
+    
+    func testBullet() {
+        let s = "- a **Offline**"
+        
+        let b = Down.parse2(s)!
+        let expDoc = Document {
+            BulletList(tight: 1) {
+                Paragraph {
+                    "a "
+                    Strong { "Offline" }
+                }
+            }
+        }
+        
+        let t = try! b.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        let e = try! expDoc.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        
+        XCTAssertEqual(t, e)
+    }
 }

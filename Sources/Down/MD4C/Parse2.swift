@@ -244,7 +244,13 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
             if let block = nodeStack.popLast(), let b = block as? Inline {
                 
                 if let l = nodeStack.last {
-                    l.addChildren([b])
+                    
+                    // if item and adding inlines, push a paragraph first
+                    if l is Item {
+                        nodeStack.append(Paragraph {})
+                    }
+                    
+                    nodeStack.last?.addChildren([b])
                 }
                 
                 else {
