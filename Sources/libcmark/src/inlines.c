@@ -363,7 +363,7 @@ static void S_normalize_code(cmark_strbuf *s) {
     switch (s->ptr[r]) {
     case '\r':
       if (s->ptr[r + 1] != '\n') {
-	s->ptr[w++] = ' ';
+        s->ptr[w++] = ' ';
       }
       break;
     case '\n':
@@ -640,7 +640,8 @@ static cmark_node *handle_period(subject *subj, bool smart) {
 }
 
 static void process_emphasis(subject *subj, bufsize_t stack_bottom) {
-  delimiter *closer = subj->last_delim;
+  delimiter *candidate;
+  delimiter *closer = NULL;
   delimiter *opener;
   delimiter *old_closer;
   bool opener_found;
@@ -650,10 +651,10 @@ static void process_emphasis(subject *subj, bufsize_t stack_bottom) {
                                  stack_bottom, stack_bottom, stack_bottom};
 
   // move back to first relevant delim.
-  while (closer != NULL &&
-         closer->previous != NULL &&
-         closer->previous->position >= stack_bottom) {
-    closer = closer->previous;
+  candidate = subj->last_delim;
+  while (candidate != NULL && candidate->position >= stack_bottom) {
+    closer = candidate;
+    candidate = candidate->previous;
   }
 
   // now move forward, looking for closers, and handling each
@@ -671,7 +672,7 @@ static void process_emphasis(subject *subj, bufsize_t stack_bottom) {
         break;
       case '*':
         openers_bottom_index = 3 +
-		(closer->can_open ? 3 : 0) + (closer->length % 3);
+                (closer->can_open ? 3 : 0) + (closer->length % 3);
         break;
       default:
         assert(false);
@@ -686,7 +687,7 @@ static void process_emphasis(subject *subj, bufsize_t stack_bottom) {
           // interior closer of size 2 can't match opener of size 1
           // or of size 1 can't match 2
           if (!(closer->can_open || opener->can_close) ||
-	      closer->length % 3 == 0 ||
+              closer->length % 3 == 0 ||
               (opener->length + closer->length) % 3 != 0) {
             opener_found = true;
             break;
