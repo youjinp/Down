@@ -147,7 +147,8 @@ public class Node {
     
     // hierarchy
     public var parent: Node? {
-        return Node(cmark_node_parent(cMarkNode))
+        guard let p = cmark_node_parent(cMarkNode) else { return nil }
+        return Node(p)
     }
     
     public var children: [Node] {

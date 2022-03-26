@@ -3,7 +3,8 @@ import XCTest
 @testable import libcmark
 
 final class DownTests: XCTestCase {
-    func testExample() {
+    // MARK: Rendering
+    func testRender_example() {
         
         let doc = Document {
             "A very nice multiline document"
@@ -48,26 +49,7 @@ final class DownTests: XCTestCase {
         XCTAssertEqual(md, exp)
     }
     
-    func testBullet() {
-        let s = "- a **Offline**"
-        
-        let b = Down.parse2(s)!
-        let expDoc = Document {
-            BulletList(tight: 1) {
-                Paragraph {
-                    "a "
-                    Strong { "Offline" }
-                }
-            }
-        }
-        
-        let t = try! b.render(with: CommonMarkRenderer(), options: .default, width: 0)
-        let e = try! expDoc.render(with: CommonMarkRenderer(), options: .default, width: 0)
-        
-        XCTAssertEqual(t, e)
-    }
-    
-    func testNestedBullet() {
+    func testRender_nestedBullet() {
         
         let doc = Document {
             BulletList(tight: 1) {
@@ -102,7 +84,7 @@ final class DownTests: XCTestCase {
         XCTAssertEqual(md, exp)
     }
     
-    func testSwitchList() {
+    func testRender_switchList() {
         
         let doc = Document {
             BulletList(tight: 1) {
@@ -129,7 +111,7 @@ final class DownTests: XCTestCase {
         XCTAssertEqual(md, exp)
     }
     
-    func testNestedList() {
+    func testRender_nestedList() {
         
         let doc = Document {
             OrderedList(delim: .init(rawValue: 1), start: 1, tight: 1) {
@@ -175,5 +157,39 @@ final class DownTests: XCTestCase {
         
         """
         XCTAssertEqual(md, exp)
+    }
+    
+    // MARK: Parsing
+    func testParse_bullet() {
+        let s = """
+        - a **Offline**
+        
+        """
+        
+        let n = Down.parse2(s)!
+        let md = try! n.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        
+        XCTAssertEqual(md, s)
+    }
+    
+    func testParse_nestedBullet() {
+        let s = """
+        1. Item 1
+            - Item a
+            - Item b
+            1. Item c
+            2. Item d
+        - Item 2
+            - Item a
+            - Item b
+            1. Item c
+            2. Item d
+        
+        """
+        
+        let n = Down.parse2(s)!
+        let md = try! n.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        
+        XCTAssertEqual(md, s)
     }
 }

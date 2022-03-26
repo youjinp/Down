@@ -101,13 +101,7 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                 do {}
                 
             case MD_BLOCK_LI:
-                // remove added paragraph for item
-                if nodeStack.last is Paragraph {
-                    let b = nodeStack.popLast() as! Block
-                    if let l = nodeStack.last {
-                        l.addChildren([b])
-                    }
-                }
+                do {}
                 
             case MD_BLOCK_HR:
                 do {}
@@ -247,10 +241,13 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                     
                     // if item and adding inlines, push a paragraph first
                     if l is Item {
-                        nodeStack.append(Paragraph {})
+                        if l.children.isEmpty { l.addChildren([ Paragraph {} ])}
+                        l.children.last?.addChildren([b])
                     }
                     
-                    nodeStack.last?.addChildren([b])
+                    else {
+                        l.addChildren([b])
+                    }
                 }
                 
                 else {
@@ -275,10 +272,13 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                 
                 // if item and adding inlines, push a paragraph first
                 if l is Item {
-                    nodeStack.append(Paragraph {})
+                    if l.children.isEmpty { l.addChildren([ Paragraph {} ]) }
+                    l.children.last?.addChildren(nodes)
                 }
                 
-                nodeStack.last?.addChildren(nodes)
+                else {
+                    l.addChildren(nodes)
+                }
             }
             
             switch textType {
