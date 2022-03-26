@@ -18,7 +18,6 @@ final class DownTests: XCTestCase {
                 Paragraph { "Second Item" }
                 Item { BlockQuote { "Third Item" } }
             }
-            
             BulletList(tight: 1) {
                 "First Item"
                 Paragraph { "Second Item" }
@@ -30,7 +29,24 @@ final class DownTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
         let md = try! doc.render(with: CommonMarkRenderer(), options: .default, width: 0)
-        XCTAssertEqual(md, "A very nice multiline document\n\nThis is the second line\n\n**A Bold*And italic*String**\n\n1)  First Item\n2)  Second Item\n3)  > Third Item\n\n<!-- end list -->\n\n  - First Item\n  - Second Item\n  - > Third Item\n")
+        let exp = """
+        A very nice multiline document
+        
+        This is the second line
+        
+        **A Bold*And italic*String**
+        
+        1) First Item
+        2) Second Item
+        3) > Third Item
+        
+        - First Item
+        - Second Item
+        - > Third Item
+        
+        """
+        
+        XCTAssertEqual(md, exp)
     }
     
     func testBullet() {
@@ -50,5 +66,67 @@ final class DownTests: XCTestCase {
         let e = try! expDoc.render(with: CommonMarkRenderer(), options: .default, width: 0)
         
         XCTAssertEqual(t, e)
+    }
+    
+    func testNestedBullet() {
+        
+        let doc = Document {
+            BulletList(tight: 1) {
+                "First Item"
+                Paragraph { "Second Item" }
+                Item {
+                    BlockQuote { "Third Item" }
+                    BulletList(tight: 1) {
+                        Item {
+                            "Nested item"
+                            BulletList(tight: 1) {
+                                "NNested item"
+                            }
+                        }
+                    }
+                }
+            }
+            "Text"
+        }
+        
+        let md = try! doc.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        let exp = """
+        - First Item
+        - Second Item
+        - > Third Item
+            - Nested item
+                - NNested item
+
+        Text
+        
+        """
+        XCTAssertEqual(md, exp)
+    }
+    
+    func testSwitchList() {
+        
+        let doc = Document {
+            BulletList(tight: 1) {
+                Item { "a" }
+                Item { "b" }
+            }
+            OrderedList(delim: .init(rawValue: 1), start: 1, tight: 1) {
+                Item { "1" }
+                Item { "2" }
+            }
+            "Abc"
+        }
+        
+        let md = try! doc.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        let exp = """
+        - a
+        - b
+        1. 1
+        2. 2
+
+        Abc
+        
+        """
+        XCTAssertEqual(md, exp)
     }
 }

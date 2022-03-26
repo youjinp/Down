@@ -214,13 +214,6 @@ static int S_render_node(cmark_renderer *renderer, cmark_node *node,
     break;
 
   case CMARK_NODE_LIST:
-    if (!entering && node->next && (node->next->type == CMARK_NODE_LIST)) {
-      // this ensures that a following indented code block or list will be
-      // inteprereted correctly.
-      CR();
-      LIT("<!-- end list -->");
-      BLANKLINE();
-    }
     break;
 
   case CMARK_NODE_ITEM:
@@ -324,7 +317,8 @@ static int S_render_node(cmark_renderer *renderer, cmark_node *node,
     break;
 
   case CMARK_NODE_PARAGRAPH:
-    if (!entering) {
+    // blankline if exiting paragraph AND not switching list type (e.g. bullet to numbered list)
+    if (!entering && !(node->parent->type == CMARK_NODE_ITEM && node->parent->parent->next != NULL && node->parent->parent->next->type == CMARK_NODE_LIST)) {
       BLANKLINE();
     }
     break;
