@@ -60,7 +60,7 @@ public struct CommonMarkRenderer: Renderer {
      */
     public func render(_ node: Node, options: DownOptions = .default, width: Int32 = 0) throws -> String {
 
-        guard let cCommonMarkString = cmark_render_commonmark(node.cMarkNode, options.rawValue, width) else {
+        guard let cCommonMarkString = cmark_render_commonmark_blackmatter(node.cMarkNode, options.rawValue, width) else {
             throw DownErrors.astRenderingError
         }
 

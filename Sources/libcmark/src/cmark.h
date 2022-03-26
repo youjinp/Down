@@ -536,6 +536,9 @@ char *cmark_render_commonmark(cmark_node *root, int options, int width);
 CMARK_EXPORT
 char *cmark_render_latex(cmark_node *root, int options, int width);
 
+CMARK_EXPORT
+char *cmark_render_commonmark_blackmatter(cmark_node *root, int options, int width);
+
 /**
  * ## Options
  */

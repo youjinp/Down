@@ -22,6 +22,15 @@ cp $CMARK_TEMP/build/src/cmark_export.h $CMARK/src/cmark_export.h
 cp $CMARK_TEMP/build/src/cmark_version.h $CMARK/src/cmark_version.h
 cp $CMARK_TEMP/build/src/config.h $CMARK/src/config.h
 
+# copy commonmark-blackmatter
+# https://stackoverflow.com/questions/25631989/sed-insert-line-command-osx
+cp scripts/commonmark-blackmatter.c $CMARK/src/commonmark-blackmatter.c
+sed -i '' '/cmark_render_latex/ a\
+\
+CMARK_EXPORT\
+char *cmark_render_commonmark_blackmatter(cmark_node *root, int options, int width);\
+' $CMARK/src/cmark.h
+
 # Delete any files that aren't source files
 find $CMARK -not -name '*.c' -type f -not -name '*.h' -type f -not -name 'entities.inc' -type f -not -name 'case_fold_switch.inc' -type f -delete
 
