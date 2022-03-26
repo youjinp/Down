@@ -235,6 +235,14 @@ static int S_render_node(cmark_renderer *renderer, cmark_node *node,
       marker_width = 4;
     }
     if (entering) {
+      // make sure there's ALWAYS newline before item
+      CR();
+    
+      // remove blank lines between lists
+      if (renderer->need_cr > 1 && node->parent && node->parent->type == CMARK_NODE_LIST && node->parent->prev && node->parent->prev->type == CMARK_NODE_LIST) {
+            renderer->need_cr = 1;
+      }
+        
       if (cmark_node_get_list_type(node->parent) == CMARK_BULLET_LIST) {
         LIT("- ");
         renderer->begin_content = true;
@@ -318,7 +326,7 @@ static int S_render_node(cmark_renderer *renderer, cmark_node *node,
 
   case CMARK_NODE_PARAGRAPH:
     // blankline if exiting paragraph AND not switching list type (e.g. bullet to numbered list)
-    if (!entering && !(node->parent->type == CMARK_NODE_ITEM && node->parent->parent->next != NULL && node->parent->parent->next->type == CMARK_NODE_LIST)) {
+    if (!entering) {
       BLANKLINE();
     }
     break;

@@ -39,7 +39,6 @@ final class DownTests: XCTestCase {
         1) First Item
         2) Second Item
         3) > Third Item
-        
         - First Item
         - Second Item
         - > Third Item
@@ -125,6 +124,54 @@ final class DownTests: XCTestCase {
         2. 2
 
         Abc
+        
+        """
+        XCTAssertEqual(md, exp)
+    }
+    
+    func testNestedList() {
+        
+        let doc = Document {
+            OrderedList(delim: .init(rawValue: 1), start: 1, tight: 1) {
+                Item {
+                    "Item 1"
+                    BulletList(tight: 1) {
+                        Item { "Item a" }
+                        Item { "Item b" }
+                    }
+                    OrderedList(delim: .init(rawValue: 1), start: 1, tight: 1) {
+                        Item { "Item c" }
+                        Item { "Item d" }
+                    }
+                }
+            }
+            BulletList(tight: 1) {
+                Item {
+                    "Item 2"
+                    BulletList(tight: 1) {
+                        Item { "Item a" }
+                        Item { "Item b" }
+                    }
+                    OrderedList(delim: .init(rawValue: 1), start: 1, tight: 1) {
+                        Item { "Item c" }
+                        Item { "Item d" }
+                    }
+                }
+            }
+        }
+        
+        let md = try! doc.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        let exp = """
+        1. Item 1
+            - Item a
+            - Item b
+            1. Item c
+            2. Item d
+        - Item 2
+            - Item a
+            - Item b
+            1. Item c
+            2. Item d
         
         """
         XCTAssertEqual(md, exp)
