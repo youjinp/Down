@@ -174,7 +174,7 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                 nodeStack.append(Image(url: detail?.pointee.src.string ?? "", title: detail?.pointee.title.string ?? nil) {})
                 
             case MD_SPAN_CODE:
-                nodeStack.append(CustomInline(onEnter: "`", onExit: "`") {})
+                nodeStack.append(Code(""))
                 
             case MD_SPAN_DEL:
                 ignoreBlockLevel += 1
