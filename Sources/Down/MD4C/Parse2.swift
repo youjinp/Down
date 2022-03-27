@@ -298,7 +298,9 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                 _addChildren([Text(str)])
                 
             case MD_TEXT_CODE:
-                nodeStack.last?.setLiteral(str)
+                if let l = nodeStack.last {
+                    l.setLiteral((l.literal ?? "") + str)
+                }
                 
             case MD_TEXT_HTML:
                 nodeStack.last?.setLiteral(str)

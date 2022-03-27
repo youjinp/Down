@@ -204,4 +204,19 @@ final class DownTests: XCTestCase {
         
         XCTAssertEqual(md, s)
     }
+    
+    func testParse_codeBlock() {
+        let s = """
+        ``` js
+        a = b;
+        123;
+        ```
+        
+        """
+        
+        let n = Down.parse2(s)!
+        let md = try! n.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        
+        XCTAssertEqual(md, s)
+    }
 }
