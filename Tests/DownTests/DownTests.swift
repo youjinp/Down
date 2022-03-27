@@ -219,4 +219,22 @@ final class DownTests: XCTestCase {
         
         XCTAssertEqual(md, s)
     }
+    
+    func testParse_latexSpan() {
+        let s = """
+        a latex $$\\frac{a}{b}$$ string
+        
+        """
+        
+        let exp = """
+        a latex $$\\\\frac{a}{b}$$ string
+        
+        """
+        
+        let n = Down.parse2(s, flags: [.latexMathSpans])!
+        let md = try! n.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        
+        
+        XCTAssertEqual(md, exp)
+    }
 }

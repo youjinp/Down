@@ -180,10 +180,10 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                 ignoreBlockLevel += 1
                 
             case MD_SPAN_LATEXMATH:
-                ignoreBlockLevel += 1
+                nodeStack.append(CustomInline(onEnter: "$$", onExit: "$$") {})
                 
             case MD_SPAN_LATEXMATH_DISPLAY:
-                ignoreBlockLevel += 1
+                nodeStack.append(CustomInline(onEnter: "$$", onExit: "$$") {})
                 
             case MD_SPAN_WIKILINK:
                 ignoreBlockLevel += 1
@@ -219,10 +219,10 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                 ignoreBlockLevel -= 1
                 
             case MD_SPAN_LATEXMATH:
-                ignoreBlockLevel -= 1
+                do {}
                 
             case MD_SPAN_LATEXMATH_DISPLAY:
-                ignoreBlockLevel -= 1
+                do {}
                 
             case MD_SPAN_WIKILINK:
                 ignoreBlockLevel -= 1
