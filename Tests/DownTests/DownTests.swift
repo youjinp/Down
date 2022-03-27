@@ -237,4 +237,16 @@ final class DownTests: XCTestCase {
         
         XCTAssertEqual(md, exp)
     }
+    
+    func testParse_strikethrough() {
+        let s = """
+        a ~~strikethoughed~~ string
+        
+        """
+        
+        let n = Down.parse2(s, flags: [.strikethrough])!
+        let md = try! n.render(with: CommonMarkRenderer(), options: .default, width: 0)
+        
+        XCTAssertEqual(md, s)
+    }
 }

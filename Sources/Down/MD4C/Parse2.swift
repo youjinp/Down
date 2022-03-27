@@ -177,7 +177,7 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                 nodeStack.append(Code(""))
                 
             case MD_SPAN_DEL:
-                ignoreBlockLevel += 1
+                nodeStack.append(CustomInline(onEnter: "~~", onExit: "~~") {})
                 
             case MD_SPAN_LATEXMATH:
                 nodeStack.append(CustomInline(onEnter: "$$", onExit: "$$") {})
@@ -216,7 +216,7 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                 do {}
                 
             case MD_SPAN_DEL:
-                ignoreBlockLevel -= 1
+                do {}
                 
             case MD_SPAN_LATEXMATH:
                 do {}
