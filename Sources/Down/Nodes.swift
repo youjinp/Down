@@ -38,12 +38,33 @@ public extension CMarkNode {
         case CMARK_NODE_LINEBREAK:      return LineBreak(self)
         case CMARK_NODE_CODE:           return Code(self)
         case CMARK_NODE_HTML_INLINE:    return HtmlInline(self)
-        case CMARK_NODE_CUSTOM_INLINE:  return CustomInline(self)
         case CMARK_NODE_EMPH:           return Emphasis(self)
         case CMARK_NODE_STRONG:         return Strong(self)
         case CMARK_NODE_LINK:           return Link(self)
         case CMARK_NODE_IMAGE:          return Image(self)
-        default:                        fatalError("unsupported node")
+        case CMARK_NODE_CUSTOM_INLINE:
+            if let cOnEnter = cmark_node_get_on_enter(self), let cOnExit = cmark_node_get_on_exit(self) {
+                let onEnter = String(cString: cOnEnter)
+                let onExit = String(cString: cOnExit)
+                
+                // latex
+                if onEnter == "$$" && onExit == "$$" {
+                    return Latex(self)
+                }
+                
+                // strikethrough
+                else if onEnter == "~~" && onExit == "~~" {
+                    return Strikethrough(self)
+                }
+                
+                else {
+                    fatalError("unsupported node")
+                }
+            }
+            
+            fatalError("unsupported node")
+            
+        default: fatalError("unsupported node")
         }
     }
 }
