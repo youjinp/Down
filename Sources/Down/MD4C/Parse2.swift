@@ -177,13 +177,13 @@ public func parse2(_ string: String, flags: DownOptions2 = .default) -> Node? {
                 nodeStack.append(Code(""))
                 
             case MD_SPAN_DEL:
-                nodeStack.append(CustomInline(onEnter: "~~", onExit: "~~") {})
+                nodeStack.append(Strikethrough {})
                 
             case MD_SPAN_LATEXMATH:
-                nodeStack.append(CustomInline(onEnter: "$$", onExit: "$$") {})
+                nodeStack.append(Latex() {})
                 
             case MD_SPAN_LATEXMATH_DISPLAY:
-                nodeStack.append(CustomInline(onEnter: "$$", onExit: "$$") {})
+                nodeStack.append(Latex() {})
                 
             case MD_SPAN_WIKILINK:
                 ignoreBlockLevel += 1

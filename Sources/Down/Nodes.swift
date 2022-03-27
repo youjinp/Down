@@ -468,9 +468,6 @@ public class CodeBlock: Node, CustomDebugStringConvertible, Block {
 // MARK: - CustomInline
 public class CustomInline: Node, CustomDebugStringConvertible, Inline {
     
-    public var onEnter: String = ""
-    public var onExit: String = ""
-    
     public convenience init(onEnter: String, onExit: String, @InlineBuilder content: () -> [Inline]) {
         
         let cMarkNode = createNode(type: CMARK_NODE_CUSTOM_INLINE)
@@ -480,9 +477,6 @@ public class CustomInline: Node, CustomDebugStringConvertible, Inline {
         guard cmark_node_set_on_exit(cMarkNode, onExit) == 1 else { fatalError("failed to set onExit") }
         
         self.init(cMarkNode)
-        
-        self.onEnter = onEnter
-        self.onExit = onExit
     }
 
     public var debugDescription: String {
@@ -806,6 +800,50 @@ public class ThematicBreak: Node, CustomDebugStringConvertible, Block {
     
     public var debugDescription: String {
         return "Thematic Break"
+    }
+}
+
+
+
+
+
+// MARK: - Latex
+public class Latex: Node, CustomDebugStringConvertible, Inline {
+    
+    public convenience init(@InlineBuilder content: () -> [Inline]) {
+        let cMarkNode = createNode(type: CMARK_NODE_CUSTOM_INLINE)
+        cMarkNode.addChildren(content())
+        
+        guard cmark_node_set_on_enter(cMarkNode, "$$") == 1 else { fatalError("failed to set onEnter") }
+        guard cmark_node_set_on_exit(cMarkNode, "$$") == 1 else { fatalError("failed to set onExit") }
+        
+        self.init(cMarkNode)
+    }
+    
+    public var debugDescription: String {
+        return "Latex"
+    }
+}
+
+
+
+
+
+// MARK: - Strikethrough
+public class Strikethrough: Node, CustomDebugStringConvertible, Inline {
+    
+    public convenience init(@InlineBuilder content: () -> [Inline]) {
+        let cMarkNode = createNode(type: CMARK_NODE_CUSTOM_INLINE)
+        cMarkNode.addChildren(content())
+        
+        guard cmark_node_set_on_enter(cMarkNode, "~~") == 1 else { fatalError("failed to set onEnter") }
+        guard cmark_node_set_on_exit(cMarkNode, "~~") == 1 else { fatalError("failed to set onExit") }
+        
+        self.init(cMarkNode)
+    }
+    
+    public var debugDescription: String {
+        return "Strikethrough"
     }
 }
 
