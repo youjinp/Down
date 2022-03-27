@@ -468,7 +468,11 @@ public class CodeBlock: Node, CustomDebugStringConvertible, Block {
 // MARK: - CustomInline
 public class CustomInline: Node, CustomDebugStringConvertible, Inline {
     
+    public var onEnter: String = ""
+    public var onExit: String = ""
+    
     public convenience init(onEnter: String, onExit: String, @InlineBuilder content: () -> [Inline]) {
+        
         let cMarkNode = createNode(type: CMARK_NODE_CUSTOM_INLINE)
         cMarkNode.addChildren(content())
         
@@ -476,6 +480,9 @@ public class CustomInline: Node, CustomDebugStringConvertible, Inline {
         guard cmark_node_set_on_exit(cMarkNode, onExit) == 1 else { fatalError("failed to set onExit") }
         
         self.init(cMarkNode)
+        
+        self.onEnter = onEnter
+        self.onExit = onExit
     }
 
     public var debugDescription: String {
